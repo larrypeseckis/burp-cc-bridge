@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# cc-burp — thin wrapper around the CC-Bridge HTTP API.
+# Reads token from ~/.cc-bridge-token (written by the extension on load).
+# Usage:
+#   cc-burp health
+#   cc-burp send -X POST -d '{"method":"GET","url":"https://example.com/"}'
+#   cc-burp history "host=example.com&limit=10"
+#   cc-burp history/42
+#   cc-burp repeat/42 -d '{"headers":{"X-Spoof":"yes"}}'
+#   cc-burp decode -d '{"input":"YWRtaW4=","kind":"auto"}'
+#   cc-burp scan -d '{"url":"https://target/","type":"active"}'
+#   cc-burp scan/7
+#   cc-burp issues "host=target&severity=HIGH"
+#   cc-burp collaborator/new -X POST
+#   cc-burp collaborator/c3
+# Any extra args after the path are passed straight to curl.
+
+set -euo pipefail
+BASE="${CC_BRIDGE_URL:-http://127.0.0.1:1337}"
+TOKEN_FILE="${CC_BRIDGE_TOKEN_FILE:-$HOME/.cc-bridge-token}"
+if [[ ! -r "$TOKEN_FILE" ]]; then
+  echo "cc-burp: cannot read $TOKEN_FILE (load the CC-Bridge extension in Burp first)" >&2
+  exit 2
+fi
+TOKEN="$(tr -d '\n' < "$TOKEN_FILE")"
+
+if [[ $# -lt 1 ]]; then
+  echo "usage: cc-burp <path[?query]> [-X METHOD] [-d JSON] [curl-flags...]" >&2
+  exit 64
+fi
+
+raw="$1"; shift
+# Allow callers to pass the query as $2 directly: cc-burp history "host=foo&limit=5"
+if [[ $# -ge 1 && "$1" != -* ]]; then
+  raw="$raw?$1"; shift
+fi
+
+# Default to POST when a -d body is present and no -X given.
+method_flag=()
+if [[ "$*" == *" -d "* || "$*" == "-d "* || "$*" == *" --data"* || "$*" == "--data"* ]]; then
+  if [[ "$*" != *" -X "* && "$*" != "-X "* ]]; then
+    method_flag=(-X POST)
+  fi
+fi
+
+exec curl -sS -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  "${method_flag[@]}" "$BASE/${raw#/}" "$@"

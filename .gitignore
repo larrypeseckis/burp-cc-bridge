@@ -1,0 +1,31 @@
+# Build output
+target/
+*.class
+*.jar
+!**/test-resources/*.jar
+
+# IDE / editor
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+*.swp
+*~
+
+# Bridge runtime artifacts
+.cc-bridge-token
+*.token
+
+# Python (lab driver helpers)
+__pycache__/
+*.pyc
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+hs_err_pid*.log
