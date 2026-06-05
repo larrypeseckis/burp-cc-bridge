@@ -1,12 +1,27 @@
 # CC-Bridge
 
+[![Latest release](https://img.shields.io/github/v/release/larrypeseckis/burp-cc-bridge?label=release&color=blue)](https://github.com/larrypeseckis/burp-cc-bridge/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Burp Community](https://img.shields.io/badge/Burp-Community-orange.svg)](https://portswigger.net/burp/communitydownload)
+[![Java 17+](https://img.shields.io/badge/Java-17%2B-red.svg)](https://adoptium.net/)
+
 A Burp Suite (Montoya API) extension that exposes Burp's most useful primitives over a
 localhost HTTP API so an agentic coding shell (Claude Code, OpenAI Codex, etc.) can drive
 Burp from `curl`.
 
 Works on Burp Community.
 
-## Build
+## Download
+
+Grab the latest release JAR — no clone or build required:
+
+**→ [cc-bridge-0.1.0.jar](https://github.com/larrypeseckis/burp-cc-bridge/releases/download/v0.1.0/cc-bridge-0.1.0.jar)** *(381 KB · sha256 `10e21b82a602e43df62ffa2758ef3f51a24af8e1a04affa82ef12d02bde9192c`)*
+
+All releases: <https://github.com/larrypeseckis/burp-cc-bridge/releases>
+
+For validation results across 7 PortSwigger Web Security Academy labs spanning 6 vulnerability classes (250 cc-burp calls, 6 solves, 1 documented architectural boundary, 0 GUI fallbacks), see [VALIDATION.md](VALIDATION.md).
+
+## Build from source
 
 ```bash
 mvn clean package
